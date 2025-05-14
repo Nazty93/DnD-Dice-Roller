@@ -3,12 +3,14 @@
 import random
 import tkinter as tk
 
-# Add a global variable to track the number of dice
+# Adds different global variables needed throughout the program.
 num_dice = 0
+add_rolls = 'true'
 
 def roll_dice(sides):
     """Roll the selected dice type the specified number of times and display the results."""
     global num_dice
+    global add_rolls
     try:
         num_dice = int(num_dice_entry.get())
         if num_dice <= 0:
@@ -20,14 +22,25 @@ def roll_dice(sides):
 
     # Roll the dice a specified number of times
     rolls = [random.randint(1, sides) for _ in range(num_dice)]
-    total = sum(rolls)
-    result_label.config(text=f'Rolls: {rolls} | Total: {total}') # this function adds the total rolls together. looking to change that
-    update_button_colors(sides)
+    if add_rolls == 'true':
+        total = sum(rolls)
+        result_label.config(text=f'Rolls: {rolls} | Total: {total}') # this function adds the total rolls together. looking to change that
+        update_button_colors(sides)
+    else:
+        result_label.config(text=f'Rolls: {rolls}')
+        update_button_colors(sides)
 
+# Function for the color change when pressing a button
 def update_button_colors(sides):
     """Update button colors to highlight the selected die."""
     for key, button in buttons.items():
         button.config(bg='purple' if key == sides else 'SystemButtonFace')
+
+# Function to toggle the add_rolls variable
+def toggle_add_rolls():
+    global add_rolls
+    add_rolls = 'false' if add_rolls == 'true' else 'true'
+    toggle_button.config(text=f'Add Rolls: {add_rolls.capitalize()}')
 
 
 # GUI setup
@@ -45,6 +58,10 @@ num_dice_label = tk.Label(window, text='Number of dice:', font=('Helvetica', 14)
 num_dice_label.pack()
 num_dice_entry = tk.Entry(window, width=5)
 num_dice_entry.pack()
+
+# Creates a button to toggle the add_rolls variable
+toggle_button = tk.Button(window, text=f'Add Rolls: {add_rolls.capitalize()}', command=toggle_add_rolls)
+toggle_button.pack(pady=10)
 
 # Frame for the dice buttons
 buttons_frame = tk.Frame(window)
